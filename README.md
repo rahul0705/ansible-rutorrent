@@ -1,2 +1,2 @@
-# rutorrent-ansible
+# ansible-rutorrent
 rutorrent role for ansible
