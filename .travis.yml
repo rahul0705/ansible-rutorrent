@@ -9,7 +9,7 @@ before_install:
 install:
   # Install Ansible.
   - pip install ansible -qq
-  - ansible-galaxy install --roles-path=../ rahul0705.rtorrent
+  - ansible-galaxy install rahul0705.rtorrent
 
 script:
   # Test for Syntax
