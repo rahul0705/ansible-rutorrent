@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/rahul0705/ansible-rutorrent.svg?branch=develop)](https://travis-ci.org/rahul0705/ansible-rutorrent)
+
 Role Name
 =========
 
