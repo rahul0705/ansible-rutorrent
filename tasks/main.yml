@@ -95,10 +95,10 @@
   tags:
     configure
 
-- name: "All | configure rutorrent htaccess file"
-  sudo: yes
-  template:
-    src: htaccess.j2
-    dest: "{{ rutorrent_document_root }}/.htaccess"
-  tags:
-    configure
+# - name: "All | configure rutorrent htaccess file"
+#   sudo: yes
+#   template:
+#     src: htaccess.j2
+#     dest: "{{ rutorrent_document_root }}/.htaccess"
+#   tags:
+#     configure
