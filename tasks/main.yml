@@ -49,6 +49,7 @@
     repo: https://github.com/Novik/ruTorrent.git
     dest: "{{ rutorrent_document_root }}"
     version: master
+    force: yes
   tags:
     install
 
