@@ -28,6 +28,8 @@ ServerName {{ rutorrent_server_name }}
   <Location />
     SetEnv R_ENV "{{ rutorrent_document_root }}"
   </Location>
+
+  SCGIMount /RPC2 {{ rtorrent_scgi_ip }}:{{ rtorrent_scgi_port }}
 </VirtualHost>
 
 {% if rutorrent_ssl_set %}
@@ -64,6 +66,8 @@ ServerName {{ rutorrent_server_name }}
 
   <Location />
     SetEnv R_ENV "{{ rutorrent_document_root }}"
-   </Location>
+  </Location>
+
+  SCGIMount /RPC2 {{ rtorrent_scgi_ip }}:{{ rtorrent_scgi_port }}
 </VirtualHost>
 {% endif %}
