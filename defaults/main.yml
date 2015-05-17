@@ -1,2 +1,12 @@
 ---
 # defaults file for ansible-rutorrent
+rutorrent_server_name: rtorrent.example.com
+rutorrent_server_admin: webmaster@example.com
+rutorrent_document_root: /var/www/rutorrent
+
+rutorrent_ssl_set: True
+rutorrent_ssl_certificate_path: /etc/apache2/conf
+rutorrent_ssl_certificate_file: "{{ rutorrent_ssl_certificate_path }}/{{ rutorrent_server_name }}.crt"
+rutorrent_ssl_certificate_key_file: "{{ rutorrent_ssl_certificate_path }}/{{ rutorrent_server_name }}.key"
+rutorrent_ssl_certificate_chain_file: "{{ rutorrent_ssl_certificate_path }}/server.ca.pem"
+rutorrent_ssl_ca_certificate_file: "{{ rutorrent_ssl_certificate_path }}/ca.pem"

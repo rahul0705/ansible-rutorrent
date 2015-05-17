@@ -1,2 +1,103 @@
 ---
 # tasks file for ansible-rutorrent
+
+- name: "Debian | install apache"
+  sudo: yes
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+    cache_valid_time: 3600
+  with_items:
+    - apache2
+    - php5
+    - git
+  when:
+    ansible_os_family: 'Debian'
+  tags:
+    dependacy
+
+- name: Debian | enable apache modules"
+  sudo: yes
+  apache2_module:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - php5
+  when:
+    ansible_os_family: 'Debian'
+  tags:
+    dependacy
+
+- name: Debian | enable apache ssl modules"
+  sudo: yes
+  apache2_module:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - rewrite
+    - ssl
+  when:
+    ansible_os_family: 'Debian'
+    rutorrent_ssl_set: True
+  tags:
+    dependacy
+
+- name: "All | download rutorrent"
+  sudo: yes
+  git:
+    repo: https://github.com/Novik/ruTorrent.git
+    dest: "{{ rutorrent_document_root }}"
+    version: master
+  tags:
+    install
+
+- name: "All | configure rutorrent apache site"
+  sudo: yes
+  template:
+    src: rtorrent.conf.j2
+    dest: /etc/apache2/sites-available/rtorrent.conf
+  tags:
+    configure
+
+- name: "All | create rutorrent ssl key folders"
+  sudo: yes
+  file:
+    path: "{{ rutorrent_ssl_certificate_path }}"
+    state: directory
+  when:
+    rutorrent_ssl_set: True
+  tags:
+    configure
+
+- name: "All | configure rutorrent ssl site"
+  sudo: yes
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  with_items:
+    - { src: "rtorrent.crt.j2", dest: "{{ rutorrent_ssl_certificate_file }}" }
+    - { src: "rtorrent.key.j2", dest: "{{ rutorrent_ssl_certificate_key_file }}" }
+    - { src: "rtorrent.pem.j2", dest: "{{ rutorrent_ssl_certificate_chain_file }}" }
+    - { src: "rtorrent.pem.j2", dest: "{{ rutorrent_ssl_ca_certificate_file }}" }
+  when:
+    rutorrent_ssl_set: True
+  tags:
+    configure
+
+- name: "All | enable rutorrent apache site"
+  sudo: yes
+  file:
+    src: /etc/apache2/sites-available/rtorrent.conf
+    dest: /etc/apache2/sites-enabled/rtorrent.conf
+    state: link
+  tags:
+    configure
+
+- name: "All | configure rutorrent htaccess file"
+  sudo: yes
+  template:
+    src: htaccess.j2
+    dest: "{{ rutorrent_document_root }}/.htaccess"
+  tags:
+    configure
