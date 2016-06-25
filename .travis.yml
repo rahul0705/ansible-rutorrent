@@ -39,4 +39,4 @@ script:
     | grep -q 'changed=0.*failed=0'
 
 notifications:
-  webhooks: https://galaxy.ansible.com/api/v1/notifications/
+  webhooks: https://galaxy.ansible.com/api/v1/notifications/ 
