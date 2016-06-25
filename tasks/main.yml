@@ -1,29 +1,24 @@
 ---
 # tasks file for ansible-rutorrent
 
-- name: "Debian | install dependacy"
-  sudo: yes
-  apt:
+- name: "install dependencies"
+  become: yes
+  package:
     name: "{{ item }}"
     state: present
-    update_cache: yes
-    cache_valid_time: 3600
   with_items:
-    - apache2
-    - php5
-    - libapache2-mod-scgi
     - curl
     - gzip
     - unzip
     - unrar
     - mediainfo
   when:
-    ansible_os_family: 'Debian'
+    ansible_os_family == "Debian"
   tags:
     dependacy
 
-- name: "All | add rtorrent user to apache group"
-  sudo: yes
+- name: "add rtorrent user to apache group"
+  become: yes
   user:
     name: "{{ rtorrent_user }}"
     groups: www-data
@@ -31,52 +26,24 @@
   tags:
     dependacy
 
-- name: "All | enable apache modules"
-  sudo: yes
-  apache2_module:
-    name: "{{ item }}"
-    state: present
-  with_items:
-    - php5
-    - scgi
-  notify:
-    - restart apache
-  tags:
-    dependacy
-
-- name: "All | enable apache ssl modules"
-  sudo: yes
-  apache2_module:
-    name: "{{ item }}"
-    state: present
-  with_items:
-    - rewrite
-    - ssl
-  notify:
-    - restart apache
-  when:
-    - rutorrent_ssl_set
-  tags:
-    dependacy
-
-- name: "All | download rutorrent"
-  sudo: yes
+- name: "download rutorrent"
+  become: yes
   get_url:
     url: "{{ rutorrent_download_url }}"
     dest: "{{ rutorrent_download_dest }}"
   tags:
     install
 
-- name: "All | download rutorrent plugins"
-  sudo: yes
+- name: "download rutorrent plugins"
+  become: yes
   get_url:
     url: "{{ rutorrent_plugins_download_url }}"
     dest: "{{ rutorrent_plugins_download_dest }}"
   tags:
     install
 
-- name: "All | create rutorrent directory"
-  sudo: yes
+- name: "create rutorrent directory"
+  become: yes
   file:
     path: "{{ rutorrent_document_root }}"
     state: directory
@@ -85,8 +52,8 @@
   tags:
     install
 
-- name: "All | install rutorrent"
-  sudo: yes
+- name: "install rutorrent"
+  become: yes
   unarchive:
     src: "{{ rutorrent_download_dest }}"
     dest: "{{ rutorrent_www_dir }}"
@@ -97,8 +64,8 @@
   tags:
     install
 
-- name: "All | install rutorrent plugins"
-  sudo: yes
+- name: "install rutorrent plugins"
+  become: yes
   unarchive:
     src: "{{ rutorrent_plugins_download_dest }}"
     dest: "{{ rutorrent_document_root }}"
@@ -109,8 +76,8 @@
   tags:
     install
 
-- name: "All | configure rutorrent apache site"
-  sudo: yes
+- name: "configure rutorrent apache site"
+  become: yes
   template:
     src: rtorrent.conf.j2
     dest: /etc/apache2/sites-available/rtorrent.conf
@@ -121,8 +88,8 @@
   tags:
     configure
 
-- name: "All | configure rutorrent htaccess file"
-  sudo: yes
+- name: "configure rutorrent htaccess file"
+  become: yes
   template:
     src: htaccess.j2
     dest: "{{ rutorrent_document_root }}/.htaccess"
@@ -131,8 +98,8 @@
   tags:
     configure
 
-- name: "All | create rutorrent ssl key folders"
-  sudo: yes
+- name: "create rutorrent ssl key folders"
+  become: yes
   file:
     path: "{{ rutorrent_ssl_certificate_path }}"
     state: directory
@@ -143,8 +110,8 @@
   tags:
     configure
 
-- name: "All | configure rutorrent ssl site"
-  sudo: yes
+- name: "configure rutorrent ssl site"
+  become: yes
   template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
@@ -162,8 +129,8 @@
   tags:
     configure
 
-- name: "All | enable rutorrent apache site"
-  sudo: yes
+- name: "enable rutorrent apache site"
+  become: yes
   file:
     src: /etc/apache2/sites-available/rtorrent.conf
     dest: /etc/apache2/sites-enabled/rtorrent.conf
@@ -173,8 +140,8 @@
   tags:
     configure
 
-- name: "All | configure rutorrent"
-  sudo: yes
+- name: "configure rutorrent"
+  become: yes
   template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"

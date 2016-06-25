@@ -7,12 +7,15 @@ galaxy_info:
   platforms:
   - name: Ubuntu
     versions:
-    - all
+      - all
   - name: Debian
     versions:
-    - all
+      - all
   categories:
-  - networking
-  - web
+    - networking
+    - web
 dependencies:
-  - { role: "rahul0705.rtorrent"}
+  #- { role: "rahul0705.rtorrent" }
+  #- { role: "rahul0705.apache" }
+  - { role: "ansible-rtorrent" }
+  - { role: "ansible-apache" }

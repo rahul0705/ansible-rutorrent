@@ -11,7 +11,7 @@ rutorrent_download_dest: /tmp/rutorrent-{{ rutorrent_version }}.tar.gz
 rutorrent_plugins_download_url: http://dl.bintray.com/novik65/generic/plugins-{{ rutorrent_version }}.tar.gz
 rutorrent_plugins_download_dest: /tmp/plugins-{{ rutorrent_version }}.tar.gz
 
-rutorrent_ssl_set: True
+rutorrent_ssl_set: False
 rutorrent_ssl_certificate_path: /etc/apache2/conf
 rutorrent_ssl_certificate_file: "{{ rutorrent_ssl_certificate_path }}/{{ rutorrent_server_name }}.crt"
 rutorrent_ssl_certificate_key_file: "{{ rutorrent_ssl_certificate_path }}/{{ rutorrent_server_name }}.key"
