@@ -1,0 +1,5 @@
+# {{ ansible_managed }}
+AuthType Basic
+AuthName "rutorrent"
+AuthUserFile  "{{ rutorrent_document_root }}.htpasswd"
+require valid-user

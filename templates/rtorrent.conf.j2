@@ -1,0 +1,73 @@
+# {{ ansible_managed }}
+ServerName {{ rutorrent_server_name }}
+<VirtualHost *:80>
+  {% if rutorrent_ssl_set %}
+  RewriteEngine on
+  RewriteCond %{SERVER_PORT} !^443$
+  ReWriteRule ^/(.*) https://%{HTTP_HOST}/$1 [NC,R,L]
+  {% endif %}
+  ServerName {{ rutorrent_server_name }}
+  ServerAdmin {{ rutorrent_server_admin }}
+
+  DocumentRoot {{ rutorrent_document_root }}
+  <Directory />
+    Options FollowSymLinks
+    AllowOverride All
+  </Directory>
+  <Directory {{ rutorrent_document_root }}>
+    Options -Indexes +FollowSymLinks +MultiViews
+    AllowOverride None
+    Order allow,deny
+    allow from all
+  </Directory>
+
+  ErrorLog /var/log/apache2/error.log
+  LogLevel warn
+  CustomLog /var/log/apache2/access.log combined
+
+  <Location />
+    SetEnv R_ENV "{{ rutorrent_document_root }}"
+  </Location>
+
+  SCGIMount /RPC2 {{ rtorrent_scgi_ip }}:{{ rtorrent_scgi_port }}
+</VirtualHost>
+
+{% if rutorrent_ssl_set %}
+ServerName {{ rutorrent_server_name }}
+<VirtualHost *:443>
+  ServerName {{ rutorrent_server_name }}
+  ServerAdmin {{ rutorrent_server_admin }}
+
+  SSLEngine on
+  SSLProtocol all -SSLv2
+  SSLCipherSuite ALL:!ADH:!EXPORT:!SSLv2:RC4+RSA:+HIGH:+MEDIUM
+  SSLCertificateFile {{ rutorrent_ssl_certificate_file }}
+  SSLCertificateKeyFile {{ rutorrent_ssl_certificate_key_file }}
+  SSLCertificateChainFile {{ rutorrent_ssl_certificate_chain_file }}
+  SSLCACertificateFile {{ rutorrent_ssl_ca_certificate_file }}
+  CustomLog /var/log/apache2/ssl_request_log \
+    "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"
+
+  DocumentRoot {{ rutorrent_document_root }}
+  <Directory />
+    Options FollowSymLinks
+    AllowOverride All
+  </Directory>
+  <Directory {{ rutorrent_document_root }}>
+    Options -Indexes +FollowSymLinks +MultiViews
+    AllowOverride None
+    Order allow,deny
+    allow from all
+  </Directory>
+
+  ErrorLog /var/log/apache2/error.log
+  LogLevel warn
+  CustomLog /var/log/apache2/access.log combined
+
+  <Location />
+    SetEnv R_ENV "{{ rutorrent_document_root }}"
+  </Location>
+
+  SCGIMount /RPC2 {{ rtorrent_scgi_ip }}:{{ rtorrent_scgi_port }}
+</VirtualHost>
+{% endif %}

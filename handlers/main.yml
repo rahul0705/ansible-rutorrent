@@ -1,2 +1,8 @@
 ---
-# Empty for now
+# handlers file for ansible-rutorrent
+
+- name: restart apache
+  become: yes
+  service:
+    name: apache2
+    state: restarted
