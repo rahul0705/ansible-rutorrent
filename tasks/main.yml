@@ -11,6 +11,7 @@
     - unzip
     - unrar
     - mediainfo
+    - ffmpeg
   tags:
     dependacy
 
@@ -22,28 +23,12 @@
   tags:
     dependacy
 
-- name: "download rutorrent source"
-  get_url:
-    url: "{{ rutorrent_download_url }}"
-    dest: "{{ rutorrent_download_dest }}"
-  tags:
-    install
-
-- name: "create rutorrent directory"
-  file:
-    path: "{{ rutorrent_document_root }}"
-    state: directory
-    owner: www-data
-    group: www-data
-  tags:
-    install
-
 - name: "unpack source into rutorrent directory"
   unarchive:
-    src: "{{ rutorrent_download_dest }}"
+    src: "{{ rutorrent_download_url }}"
     dest: "{{ rutorrent_www_dir }}"
     copy: no
-    creates: "{{ rutorrent_document_root }}/conf"
+    creates: "{{ rutorrent_document_root }}"
     owner: www-data
     group: www-data
   tags:
