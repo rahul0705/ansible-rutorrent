@@ -2,7 +2,6 @@
 # tasks file for ansible-rutorrent
 
 - name: "install dependencies"
-  become: yes
   package:
     name: "{{ item }}"
     state: present
@@ -12,13 +11,10 @@
     - unzip
     - unrar
     - mediainfo
-  when:
-    ansible_os_family == "Debian"
   tags:
     dependacy
 
 - name: "add rtorrent user to apache group"
-  become: yes
   user:
     name: "{{ rtorrent_user }}"
     groups: www-data
@@ -26,24 +22,14 @@
   tags:
     dependacy
 
-- name: "download rutorrent"
-  become: yes
+- name: "download rutorrent source"
   get_url:
     url: "{{ rutorrent_download_url }}"
     dest: "{{ rutorrent_download_dest }}"
   tags:
     install
 
-- name: "download rutorrent plugins"
-  become: yes
-  get_url:
-    url: "{{ rutorrent_plugins_download_url }}"
-    dest: "{{ rutorrent_plugins_download_dest }}"
-  tags:
-    install
-
 - name: "create rutorrent directory"
-  become: yes
   file:
     path: "{{ rutorrent_document_root }}"
     state: directory
@@ -52,8 +38,7 @@
   tags:
     install
 
-- name: "install rutorrent"
-  become: yes
+- name: "unpack source into rutorrent directory"
   unarchive:
     src: "{{ rutorrent_download_dest }}"
     dest: "{{ rutorrent_www_dir }}"
@@ -64,20 +49,7 @@
   tags:
     install
 
-- name: "install rutorrent plugins"
-  become: yes
-  unarchive:
-    src: "{{ rutorrent_plugins_download_dest }}"
-    dest: "{{ rutorrent_document_root }}"
-    copy: no
-    creates: "{{ rutorrent_document_root }}/plugins/unpack"
-    owner: www-data
-    group: www-data
-  tags:
-    install
-
 - name: "configure rutorrent apache site"
-  become: yes
   template:
     src: rtorrent.conf.j2
     dest: /etc/apache2/sites-available/rtorrent.conf
@@ -89,7 +61,6 @@
     configure
 
 - name: "configure rutorrent htaccess file"
-  become: yes
   template:
     src: htaccess.j2
     dest: "{{ rutorrent_document_root }}/.htaccess"
@@ -99,7 +70,6 @@
     configure
 
 - name: "create rutorrent ssl key folders"
-  become: yes
   file:
     path: "{{ rutorrent_ssl_certificate_path }}"
     state: directory
@@ -111,7 +81,6 @@
     configure
 
 - name: "configure rutorrent ssl site"
-  become: yes
   template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
@@ -130,7 +99,6 @@
     configure
 
 - name: "enable rutorrent apache site"
-  become: yes
   file:
     src: /etc/apache2/sites-available/rtorrent.conf
     dest: /etc/apache2/sites-enabled/rtorrent.conf
@@ -141,7 +109,6 @@
     configure
 
 - name: "configure rutorrent"
-  become: yes
   template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"

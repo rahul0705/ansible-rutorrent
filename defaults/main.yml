@@ -5,11 +5,9 @@ rutorrent_server_admin: webmaster@example.com
 rutorrent_www_dir: /var/www
 rutorrent_document_root: "{{ rutorrent_www_dir }}/rutorrent"
 
-rutorrent_version: 3.6
-rutorrent_download_url: http://dl.bintray.com/novik65/generic/rutorrent-{{ rutorrent_version }}.tar.gz
-rutorrent_download_dest: /tmp/rutorrent-{{ rutorrent_version }}.tar.gz
-rutorrent_plugins_download_url: http://dl.bintray.com/novik65/generic/plugins-{{ rutorrent_version }}.tar.gz
-rutorrent_plugins_download_dest: /tmp/plugins-{{ rutorrent_version }}.tar.gz
+rutorrent_version: 3.7
+rutorrent_download_url: https://bintray.com/artifact/download/novik65/generic/ruTorrent-{{ rutorrent_version }}.zip
+rutorrent_download_dest: /tmp/rutorrent-{{ rutorrent_version }}.zip
 
 rutorrent_ssl_set: False
 rutorrent_ssl_certificate_path: /etc/apache2/conf
