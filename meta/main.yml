@@ -15,5 +15,3 @@ galaxy_info:
 dependencies:
   - { role: "rahul0705.rtorrent" }
   - { role: "rahul0705.apache" }
-  #- { role: "ansible-rtorrent" }
-  #- { role: "ansible-apache" }
