@@ -13,7 +13,7 @@ galaxy_info:
       - all
   galaxy_tags: [networking, web]
 dependencies:
-  #- { role: "rahul0705.rtorrent" }
-  #- { role: "rahul0705.apache" }
-  - { role: "ansible-rtorrent" }
-  - { role: "ansible-apache" }
+  - { role: "rahul0705.rtorrent" }
+  - { role: "rahul0705.apache" }
+  #- { role: "ansible-rtorrent" }
+  #- { role: "ansible-apache" }
