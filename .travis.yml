@@ -39,7 +39,7 @@ script:
     | grep -q 'changed=0.*failed=0'
   # Test for Success
   - >
-    curl --user rutorrent:rutorrent 127.0.0.1 | grep 'rTorrent'
+    curl -s --user rutorrent:rutorrent 127.0.0.1 | grep -q 'rTorrent'
   - >
     sudo ufw status | grep -q "80.*ALLOW.*Anywhere"
 notifications:
