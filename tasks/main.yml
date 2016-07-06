@@ -1,7 +1,18 @@
 ---
 # tasks file for ansible-rutorrent
 
-- name: "install dependencies"
+- name: "install ansible dependencies"
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+      - python-passlib
+  when:
+    - rutorrent_create_htpasswd
+  tags:
+    dependacy
+
+- name: "install rutorrent dependencies"
   package:
     name: "{{ item }}"
     state: present
@@ -29,8 +40,8 @@
     dest: "{{ rutorrent_www_dir }}"
     copy: no
     creates: "{{ rutorrent_document_root }}"
-    owner: www-data
     group: www-data
+    mode: g+w
   tags:
     install
 
@@ -38,21 +49,34 @@
   template:
     src: rtorrent.conf.j2
     dest: /etc/apache2/sites-available/rtorrent.conf
-    owner: www-data
     group: www-data
   notify:
     - restart apache
   tags:
     configure
 
-- name: "configure rutorrent htaccess file"
-  template:
-    src: htaccess.j2
-    dest: "{{ rutorrent_document_root }}/.htaccess"
+- name: "create htpasswd file with rutorrent user"
+  htpasswd:
+    path: "{{ rutorrent_document_root }}/.htpasswd"
+    name: "{{ rutorrent_user }}"
+    password: "{{ rutorrent_password }}"
+    group: www-data
   notify:
     - restart apache
+  when:
+    - rutorrent_create_htpasswd
+  tags: configure
+
+- name: "allow http rutorrent in ufw"
+  become: yes
+  ufw:
+    rule: allow
+    port: "{{ rutorrent_http_port }}"
+    state: enabled
+  when:
+    - rutorrent_configure_ufw
   tags:
-    configure
+    - firewall
 
 - name: "create rutorrent ssl key folders"
   file:
@@ -65,11 +89,10 @@
   tags:
     configure
 
-- name: "configure rutorrent ssl site"
+- name: "create rutorrent ssl certs"
   template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
-    owner: www-data
     group: www-data
   with_items:
     - { src: "rtorrent.crt.j2", dest: "{{ rutorrent_ssl_certificate_file }}" }
@@ -82,6 +105,18 @@
     - rutorrent_ssl_set
   tags:
     configure
+
+- name: "allow https rutorrent in ufw"
+  become: yes
+  ufw:
+    rule: allow
+    port: "{{ rutorrent_http_port }}"
+    state: enabled
+  when:
+    - rutorrent_configure_ufw
+    - rutorrent_ssl_set
+  tags:
+    - firewall
 
 - name: "enable rutorrent apache site"
   file:
@@ -97,8 +132,8 @@
   template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
-    owner: www-data
     group: www-data
+    mode: g+w
   with_items:
     - { src: "access.ini.j2", dest: "{{ rutorrent_document_root }}/conf/access.ini" }
     - { src: "config.php.j2", dest: "{{ rutorrent_document_root }}/conf/config.php" }
