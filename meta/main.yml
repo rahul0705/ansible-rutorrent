@@ -3,7 +3,7 @@ galaxy_info:
   author: "Rahul Mohandas"
   description: Installs and configures ruTorrent
   license: MIT
-  min_ansible_version: 1.6
+  min_ansible_version: 2.0
   platforms:
   - name: Ubuntu
     versions:
@@ -11,11 +11,7 @@ galaxy_info:
   - name: Debian
     versions:
       - all
-  categories:
-    - networking
-    - web
+  galaxy_tags: [networking, web]
 dependencies:
   - { role: "rahul0705.rtorrent" }
   - { role: "rahul0705.apache" }
-  #- { role: "ansible-rtorrent" }
-  #- { role: "ansible-apache" }

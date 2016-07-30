@@ -1,9 +1,9 @@
 # {{ ansible_managed }}
 ServerName {{ rutorrent_server_name }}
-<VirtualHost *:80>
+<VirtualHost *:{{ rutorrent_http_port }}>
   {% if rutorrent_ssl_set %}
   RewriteEngine on
-  RewriteCond %{SERVER_PORT} !^443$
+  RewriteCond %{SERVER_PORT} !^{{ rutorrent_https_port }}$
   ReWriteRule ^/(.*) https://%{HTTP_HOST}/$1 [NC,R,L]
   {% endif %}
   ServerName {{ rutorrent_server_name }}
@@ -26,6 +26,12 @@ ServerName {{ rutorrent_server_name }}
   CustomLog /var/log/apache2/access.log combined
 
   <Location />
+    {% if rutorrent_create_htpasswd %}
+    AuthType Basic
+    AuthName "rutorrent"
+    AuthUserFile "{{ rutorrent_document_root }}/.htpasswd"
+    Require valid-user
+    {% endif %}
     SetEnv R_ENV "{{ rutorrent_document_root }}"
   </Location>
 
@@ -34,7 +40,7 @@ ServerName {{ rutorrent_server_name }}
 
 {% if rutorrent_ssl_set %}
 ServerName {{ rutorrent_server_name }}
-<VirtualHost *:443>
+<VirtualHost *:{{ rutorrent_https_port }}>
   ServerName {{ rutorrent_server_name }}
   ServerAdmin {{ rutorrent_server_admin }}
 
@@ -65,6 +71,12 @@ ServerName {{ rutorrent_server_name }}
   CustomLog /var/log/apache2/access.log combined
 
   <Location />
+    {% if rutorrent_create_htpasswd %}
+    AuthType Basic
+    AuthName "rutorrent"
+    AuthUserFile "{{ rutorrent_document_root }}/.htpasswd"
+    Require valid-user
+    {% endif %}
     SetEnv R_ENV "{{ rutorrent_document_root }}"
   </Location>
 

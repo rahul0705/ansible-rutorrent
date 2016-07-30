@@ -30,13 +30,17 @@ script:
     --syntax-check
   # Test for Failure
   - >
-    ansible-playbook -i tests/inventory tests/test.yml
+    ansible-playbook -i tests/inventory tests/test.yml --become
     --connection=local
   # Test for Idempotence
   - >
-    ansible-playbook -i tests/inventory tests/test.yml
+    ansible-playbook -i tests/inventory tests/test.yml --become
     --connection=local
     | grep -q 'changed=0.*failed=0'
-
+  # Test for Success
+  - >
+    curl -s --user rutorrent:rutorrent 127.0.0.1 | grep -q 'rTorrent'
+  - >
+    sudo ufw status | grep -q "80.*ALLOW.*Anywhere"
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
