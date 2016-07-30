@@ -1,8 +1,18 @@
 ---
 # tasks file for ansible-rutorrent
 
-- name: "install dependencies"
-  become: yes
+- name: "install ansible dependencies"
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+      - python-passlib
+  when:
+    - rutorrent_create_htpasswd
+  tags:
+    dependacy
+
+- name: "install rutorrent dependencies"
   package:
     name: "{{ item }}"
     state: present
@@ -12,13 +22,11 @@
     - unzip
     - unrar
     - mediainfo
-  when:
-    ansible_os_family == "Debian"
+    - ffmpeg
   tags:
     dependacy
 
 - name: "add rtorrent user to apache group"
-  become: yes
   user:
     name: "{{ rtorrent_user }}"
     groups: www-data
@@ -26,80 +34,51 @@
   tags:
     dependacy
 
-- name: "download rutorrent"
-  become: yes
-  get_url:
-    url: "{{ rutorrent_download_url }}"
-    dest: "{{ rutorrent_download_dest }}"
-  tags:
-    install
-
-- name: "download rutorrent plugins"
-  become: yes
-  get_url:
-    url: "{{ rutorrent_plugins_download_url }}"
-    dest: "{{ rutorrent_plugins_download_dest }}"
-  tags:
-    install
-
-- name: "create rutorrent directory"
-  become: yes
-  file:
-    path: "{{ rutorrent_document_root }}"
-    state: directory
-    owner: www-data
-    group: www-data
-  tags:
-    install
-
-- name: "install rutorrent"
-  become: yes
+- name: "unpack source into rutorrent directory"
   unarchive:
-    src: "{{ rutorrent_download_dest }}"
+    src: "{{ rutorrent_download_url }}"
     dest: "{{ rutorrent_www_dir }}"
     copy: no
-    creates: "{{ rutorrent_document_root }}/conf"
-    owner: www-data
+    creates: "{{ rutorrent_document_root }}"
     group: www-data
-  tags:
-    install
-
-- name: "install rutorrent plugins"
-  become: yes
-  unarchive:
-    src: "{{ rutorrent_plugins_download_dest }}"
-    dest: "{{ rutorrent_document_root }}"
-    copy: no
-    creates: "{{ rutorrent_document_root }}/plugins/unpack"
-    owner: www-data
-    group: www-data
+    mode: g+w
   tags:
     install
 
 - name: "configure rutorrent apache site"
-  become: yes
   template:
     src: rtorrent.conf.j2
     dest: /etc/apache2/sites-available/rtorrent.conf
-    owner: www-data
     group: www-data
   notify:
     - restart apache
   tags:
     configure
 
-- name: "configure rutorrent htaccess file"
-  become: yes
-  template:
-    src: htaccess.j2
-    dest: "{{ rutorrent_document_root }}/.htaccess"
+- name: "create htpasswd file with rutorrent user"
+  htpasswd:
+    path: "{{ rutorrent_document_root }}/.htpasswd"
+    name: "{{ rutorrent_user }}"
+    password: "{{ rutorrent_password }}"
+    group: www-data
   notify:
     - restart apache
+  when:
+    - rutorrent_create_htpasswd
+  tags: configure
+
+- name: "allow http rutorrent in ufw"
+  become: yes
+  ufw:
+    rule: allow
+    port: "{{ rutorrent_http_port }}"
+    state: enabled
+  when:
+    - rutorrent_configure_ufw
   tags:
-    configure
+    - firewall
 
 - name: "create rutorrent ssl key folders"
-  become: yes
   file:
     path: "{{ rutorrent_ssl_certificate_path }}"
     state: directory
@@ -110,12 +89,10 @@
   tags:
     configure
 
-- name: "configure rutorrent ssl site"
-  become: yes
+- name: "create rutorrent ssl certs"
   template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
-    owner: www-data
     group: www-data
   with_items:
     - { src: "rtorrent.crt.j2", dest: "{{ rutorrent_ssl_certificate_file }}" }
@@ -129,8 +106,19 @@
   tags:
     configure
 
-- name: "enable rutorrent apache site"
+- name: "allow https rutorrent in ufw"
   become: yes
+  ufw:
+    rule: allow
+    port: "{{ rutorrent_http_port }}"
+    state: enabled
+  when:
+    - rutorrent_configure_ufw
+    - rutorrent_ssl_set
+  tags:
+    - firewall
+
+- name: "enable rutorrent apache site"
   file:
     src: /etc/apache2/sites-available/rtorrent.conf
     dest: /etc/apache2/sites-enabled/rtorrent.conf
@@ -141,12 +129,11 @@
     configure
 
 - name: "configure rutorrent"
-  become: yes
   template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
-    owner: www-data
     group: www-data
+    mode: g+w
   with_items:
     - { src: "access.ini.j2", dest: "{{ rutorrent_document_root }}/conf/access.ini" }
     - { src: "config.php.j2", dest: "{{ rutorrent_document_root }}/conf/config.php" }
