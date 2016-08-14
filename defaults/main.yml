@@ -8,7 +8,7 @@ rutorrent_create_htpasswd: true
 rutorrent_user: rutorrent
 rutorrent_password: rutorrent
 
-rutorrent_server_name: rtorrent.example.com
+rutorrent_server_name: rutorrent.example.com
 rutorrent_server_admin: webmaster@example.com
 rutorrent_www_dir: /var/www
 rutorrent_document_root: "{{ rutorrent_www_dir }}/ruTorrent"
@@ -17,8 +17,12 @@ rutorrent_version: 3.7
 rutorrent_download_url: https://bintray.com/artifact/download/novik65/generic/ruTorrent-{{ rutorrent_version }}.zip
 
 rutorrent_ssl_set: false
+rutorrent_ssl_certificate_name: rutorrent_cert
+rutorrent_ssl_certificate_key_name: rutorrent_key
+rutorrent_ssl_certificate_chain_name: rutorrent_chain
+rutorrent_ssl_ca_certificate_name: rutorrent_ca_cert
 rutorrent_ssl_certificate_path: /etc/ssl
-rutorrent_ssl_certificate_file: "{{ rutorrent_ssl_certificate_path }}/certs/{{ rutorrent_server_name }}.crt"
-rutorrent_ssl_certificate_key_file: "{{ rutorrent_ssl_certificate_path }}/private/{{ rutorrent_server_name }}.key"
-rutorrent_ssl_certificate_chain_file: "{{ rutorrent_ssl_certificate_path }}/server.ca.pem"
-rutorrent_ssl_ca_certificate_file: "{{ rutorrent_ssl_certificate_path }}/ca.pem"
+rutorrent_ssl_certificate_file: "{{ rutorrent_ssl_certificate_path }}/certs/{{ rutorrent_ssl_certificate_name }}.crt"
+rutorrent_ssl_certificate_key_file: "{{ rutorrent_ssl_certificate_path }}/private/{{ rutorrent_ssl_certificate_key_name }}.key"
+rutorrent_ssl_certificate_chain_file: "{{ rutorrent_ssl_certificate_path }}/{{ rutorrent_ssl_certificate_name }}.crt"
+rutorrent_ssl_ca_certificate_file: "{{ rutorrent_ssl_certificate_path }}/{{ rutorrent_ssl_ca_certificate_name }}.crt"
