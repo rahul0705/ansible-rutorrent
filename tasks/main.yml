@@ -102,10 +102,10 @@
     dest: "{{ item.dest }}"
     group: www-data
   with_items:
-    - { src: "rtorrent.crt", dest: "{{ rutorrent_ssl_certificate_file }}" }
-    - { src: "rtorrent.key", dest: "{{ rutorrent_ssl_certificate_key_file }}" }
-    - { src: "rtorrent.pem", dest: "{{ rutorrent_ssl_certificate_chain_file }}" }
-    - { src: "rtorrent.pem", dest: "{{ rutorrent_ssl_ca_certificate_file }}" }
+    - { src: "{{ rutorrent_ssl_certificate_name }}", dest: "{{ rutorrent_ssl_certificate_file }}" }
+    - { src: "{{ rutorrent_ssl_certificate_key_name }}", dest: "{{ rutorrent_ssl_certificate_key_file }}" }
+    - { src: "{{ rutorrent_ssl_certificate_chain_name }}", dest: "{{ rutorrent_ssl_certificate_chain_file }}" }
+    - { src: "{{ rutorrent_ssl_ca_certificate_name }}", dest: "{{ rutorrent_ssl_ca_certificate_file }}" }
   notify:
     - restart apache
   when:
