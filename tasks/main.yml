@@ -45,6 +45,13 @@
   tags:
     install
 
+- name: "rename unpacked folder"
+  command: mv {{ rutorrent_www_dir }}/ruTorrent-master {{ rutorrent_document_root }}
+  args:
+    creates: "{{ rutorrent_document_root }}"
+  tags:
+    - install
+
 - name: "configure rutorrent apache site"
   template:
     src: rtorrent.conf.j2
@@ -90,15 +97,15 @@
     configure
 
 - name: "create rutorrent ssl certs"
-  template:
+  copy:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
     group: www-data
   with_items:
-    - { src: "rtorrent.crt.j2", dest: "{{ rutorrent_ssl_certificate_file }}" }
-    - { src: "rtorrent.key.j2", dest: "{{ rutorrent_ssl_certificate_key_file }}" }
-    - { src: "rtorrent.pem.j2", dest: "{{ rutorrent_ssl_certificate_chain_file }}" }
-    - { src: "rtorrent.pem.j2", dest: "{{ rutorrent_ssl_ca_certificate_file }}" }
+    - { src: "rtorrent.crt", dest: "{{ rutorrent_ssl_certificate_file }}" }
+    - { src: "rtorrent.key", dest: "{{ rutorrent_ssl_certificate_key_file }}" }
+    - { src: "rtorrent.pem", dest: "{{ rutorrent_ssl_certificate_chain_file }}" }
+    - { src: "rtorrent.pem", dest: "{{ rutorrent_ssl_ca_certificate_file }}" }
   notify:
     - restart apache
   when:
