@@ -46,11 +46,11 @@
     install
 
 - name: "rename unpacked folder"
-command: mv {{ rutorrent_www_dir }}/ruTorrent-master {{ rutorrent_document_root }}
-args:
-  creates: "{{ rutorrent_document_root }}"
-tags:
-  - install
+  command: mv {{ rutorrent_www_dir }}/ruTorrent-master {{ rutorrent_document_root }}
+  args:
+    creates: "{{ rutorrent_document_root }}"
+  tags:
+    - install
 
 - name: "configure rutorrent apache site"
   template:
