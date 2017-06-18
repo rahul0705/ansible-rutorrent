@@ -45,12 +45,9 @@ ServerName {{ rutorrent_server_name }}
   ServerAdmin {{ rutorrent_server_admin }}
 
   SSLEngine on
-  SSLProtocol all -SSLv2
-  SSLCipherSuite ALL:!ADH:!EXPORT:!SSLv2:RC4+RSA:+HIGH:+MEDIUM
   SSLCertificateFile {{ rutorrent_ssl_certificate_file }}
   SSLCertificateKeyFile {{ rutorrent_ssl_certificate_key_file }}
-  SSLCertificateChainFile {{ rutorrent_ssl_certificate_chain_file }}
-  SSLCACertificateFile {{ rutorrent_ssl_ca_certificate_file }}
+  Include {{ certbot_directory }}/options-ssl-apache.conf
   CustomLog /var/log/apache2/ssl_request_log \
     "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"
 

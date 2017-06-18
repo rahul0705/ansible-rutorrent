@@ -85,34 +85,6 @@
   tags:
     - firewall
 
-- name: "create rutorrent ssl key folders"
-  file:
-    path: "{{ rutorrent_ssl_certificate_path }}"
-    state: directory
-  notify:
-    - restart apache
-  when:
-    - rutorrent_ssl_set
-  tags:
-    configure
-
-- name: "create rutorrent ssl certs"
-  copy:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-    group: www-data
-  with_items:
-    - { src: "{{ rutorrent_ssl_certificate_name }}", dest: "{{ rutorrent_ssl_certificate_file }}" }
-    - { src: "{{ rutorrent_ssl_certificate_key_name }}", dest: "{{ rutorrent_ssl_certificate_key_file }}" }
-    - { src: "{{ rutorrent_ssl_certificate_chain_name }}", dest: "{{ rutorrent_ssl_certificate_chain_file }}" }
-    - { src: "{{ rutorrent_ssl_ca_certificate_name }}", dest: "{{ rutorrent_ssl_ca_certificate_file }}" }
-  notify:
-    - restart apache
-  when:
-    - rutorrent_ssl_set
-  tags:
-    configure
-
 - name: "allow https rutorrent in ufw"
   become: yes
   ufw:
