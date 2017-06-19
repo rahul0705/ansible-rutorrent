@@ -1,2 +1,4 @@
 ---
 # vars file for ansible-rutorrent
+certbot_cert_domain: "{{ rutorrent_server_name }}"
+certbot_cert_email: "{{ rutorrent_server_admin }}"

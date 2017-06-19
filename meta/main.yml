@@ -16,6 +16,4 @@ dependencies:
   - role: "rahul0705.rtorrent"
   - role: "rahul0705.apache"
   - role: "rahul0705.ansible-certbot"
-    certbot_cert_domain: "{{ rutorrent_server_name }}"
-    certbot_cert_email: "{{ rutorrent_server_admin }}"
     when: rutorrent_ssl_set
