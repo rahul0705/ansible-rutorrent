@@ -20,4 +20,4 @@ rutorrent_ssl_set: false
 rutorrent_ssl_certificate_name: fullchain.pem
 rutorrent_ssl_certificate_key_name: privkey.pem
 rutorrent_ssl_certificate_file: "{{ certbot_cert_directory }}/{{ rutorrent_ssl_certificate_name }}"
-rutorrent_ssl_certificate_key_file: "{{ certbot_cert_directory }}/private/{{ rutorrent_ssl_certificate_key_name }}"
+rutorrent_ssl_certificate_key_file: "{{ certbot_cert_directory }}/{{ rutorrent_ssl_certificate_key_name }}"
