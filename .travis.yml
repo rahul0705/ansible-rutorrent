@@ -19,7 +19,7 @@ install:
   - ansible --version
   - ansible-galaxy install --roles-path=./tests/roles rahul0705.rtorrent
   - ansible-galaxy install --roles-path=./tests/roles rahul0705.apache
-  - ansible-galaxy install --roles-path=./tests/roles rahul0705.ansible-certbot
+  - ansible-galaxy install --roles-path=./tests/roles rahul0705.certbot
 
   # Create ansible.cfg with correct roles_path
   - printf '[defaults]\nroles_path=../' >ansible.cfg
