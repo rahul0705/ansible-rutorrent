@@ -46,7 +46,7 @@
     install
 
 - name: "rename unpacked folder"
-  command: mv {{ rutorrent_www_dir }}/ruTorrent-master {{ rutorrent_document_root }}
+  command: mv {{ rutorrent_www_dir }}/ruTorrent-{{ rutorrent_version }} {{ rutorrent_document_root }}
   args:
     creates: "{{ rutorrent_document_root }}"
   tags:
