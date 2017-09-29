@@ -14,7 +14,6 @@ rutorrent_www_dir: /var/www
 rutorrent_document_root: "{{ rutorrent_www_dir }}/ruTorrent"
 
 rutorrent_version: 3.8
-https://api.github.com/repos/Novik/ruTorrent/zipball/v3.8
 rutorrent_download_url: https://github.com/Novik/ruTorrent/archive/v{{ rutorrent_version }}.zip
 
 rutorrent_ssl_set: false
