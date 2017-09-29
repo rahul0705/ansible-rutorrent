@@ -65,7 +65,7 @@
     dest: /etc/apache2/sites-available/rtorrent.conf
     group: www-data
   notify:
-    - restart apache
+    - Restart apache
   tags:
     configure
 
@@ -76,7 +76,7 @@
     password: "{{ rutorrent_password }}"
     group: www-data
   notify:
-    - restart apache
+    - Restart apache
   when:
     - rutorrent_create_htpasswd
   tags: configure
@@ -110,7 +110,7 @@
     dest: /etc/apache2/sites-enabled/rtorrent.conf
     state: link
   notify:
-    - restart apache
+    - Restart apache
   tags:
     configure
 
