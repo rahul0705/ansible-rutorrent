@@ -12,6 +12,13 @@
   tags:
     dependacy
 
+- name: Add additional repos to the package manager
+  include_tasks: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_distribution }}_{{ ansible_distribution_version }}.yml"
+  tags:
+    - dependancy
+
 - name: Install rutorrent dependencies
   package:
     name: "{{ item }}"

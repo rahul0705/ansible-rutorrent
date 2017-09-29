@@ -1,0 +1,7 @@
+---
+# tasks file for ansible-certbot configure_apt
+
+- name: add FFMPeg PPA
+  apt_repository:
+    repo: "ppa:jon-severinsson/ffmpeg"
+    state: present
