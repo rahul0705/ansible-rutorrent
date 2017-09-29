@@ -3,5 +3,5 @@
 
 - name: add FFMPeg PPA
   apt_repository:
-    repo: "ppa:jon-severinsson/ffmpeg"
+    repo: "ppa:mc3man/trusty-media"
     state: present
