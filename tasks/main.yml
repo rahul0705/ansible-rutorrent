@@ -1,7 +1,7 @@
 ---
 # tasks file for ansible-rutorrent
 
-- name: "install ansible dependencies"
+- name: Install ansible dependencies
   package:
     name: "{{ item }}"
     state: present
@@ -12,7 +12,14 @@
   tags:
     dependacy
 
-- name: "install rutorrent dependencies"
+- name: Add additional repos to the package manager
+  include_tasks: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_distribution }}_{{ ansible_distribution_version }}.yml"
+  tags:
+    - dependancy
+
+- name: Install rutorrent dependencies
   package:
     name: "{{ item }}"
     state: present
@@ -26,7 +33,7 @@
   tags:
     dependacy
 
-- name: "add rtorrent user to apache group"
+- name: Add rtorrent user to apache group
   user:
     name: "{{ rtorrent_user }}"
     groups: www-data
@@ -34,7 +41,7 @@
   tags:
     dependacy
 
-- name: "unpack source into rutorrent directory"
+- name: Unpack source into rutorrent directory
   unarchive:
     src: "{{ rutorrent_download_url }}"
     dest: "{{ rutorrent_www_dir }}"
@@ -45,36 +52,36 @@
   tags:
     install
 
-- name: "rename unpacked folder"
-  command: mv {{ rutorrent_www_dir }}/ruTorrent-master {{ rutorrent_document_root }}
+- name: Rename unpacked folder
+  command: mv {{ rutorrent_www_dir }}/ruTorrent-{{ rutorrent_version }} {{ rutorrent_document_root }}
   args:
     creates: "{{ rutorrent_document_root }}"
   tags:
     - install
 
-- name: "configure rutorrent apache site"
+- name: Configure rutorrent apache site
   template:
     src: rtorrent.conf.j2
     dest: /etc/apache2/sites-available/rtorrent.conf
     group: www-data
   notify:
-    - restart apache
+    - Restart apache
   tags:
     configure
 
-- name: "create htpasswd file with rutorrent user"
+- name: Create htpasswd file with rutorrent user
   htpasswd:
     path: "{{ rutorrent_document_root }}/.htpasswd"
     name: "{{ rutorrent_user }}"
     password: "{{ rutorrent_password }}"
     group: www-data
   notify:
-    - restart apache
+    - Restart apache
   when:
     - rutorrent_create_htpasswd
   tags: configure
 
-- name: "allow http rutorrent in ufw"
+- name: Allow http rutorrent in ufw
   become: yes
   ufw:
     rule: allow
@@ -85,7 +92,7 @@
   tags:
     - firewall
 
-- name: "allow https rutorrent in ufw"
+- name: Allow https rutorrent in ufw
   become: yes
   ufw:
     rule: allow
@@ -97,17 +104,17 @@
   tags:
     - firewall
 
-- name: "enable rutorrent apache site"
+- name: Enable rutorrent apache site
   file:
     src: /etc/apache2/sites-available/rtorrent.conf
     dest: /etc/apache2/sites-enabled/rtorrent.conf
     state: link
   notify:
-    - restart apache
+    - Restart apache
   tags:
     configure
 
-- name: "configure rutorrent"
+- name: Configure rutorrent
   template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"

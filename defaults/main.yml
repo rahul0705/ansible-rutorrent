@@ -13,8 +13,8 @@ rutorrent_server_admin: webmaster@example.com
 rutorrent_www_dir: /var/www
 rutorrent_document_root: "{{ rutorrent_www_dir }}/ruTorrent"
 
-rutorrent_version: 3.7
-rutorrent_download_url: https://bintray.com/artifact/download/novik65/generic/ruTorrent-{{ rutorrent_version }}.zip
+rutorrent_version: 3.8
+rutorrent_download_url: https://github.com/Novik/ruTorrent/archive/v{{ rutorrent_version }}.zip
 
 rutorrent_ssl_set: false
 rutorrent_ssl_certificate_name: fullchain.pem

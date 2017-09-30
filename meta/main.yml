@@ -15,5 +15,5 @@ galaxy_info:
 dependencies:
   - role: "rahul0705.rtorrent"
   - role: "rahul0705.apache"
-  - role: "rahul0705.ansible-certbot"
+  - role: "rahul0705.certbot"
     when: rutorrent_ssl_set
