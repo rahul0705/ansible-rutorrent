@@ -44,5 +44,8 @@ script:
     curl -s --user rutorrent:rutorrent 127.0.0.1 | grep -q 'rTorrent'
   - >
     sudo ufw status | grep -q "80.*ALLOW.*Anywhere"
+  - >
+    ls /var/www/html/ruTorrent
+    > /dev/null
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
