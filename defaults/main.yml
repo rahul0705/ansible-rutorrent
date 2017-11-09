@@ -10,7 +10,7 @@ rutorrent_password: rutorrent
 
 rutorrent_server_name: rutorrent.example.com
 rutorrent_server_admin: webmaster@example.com
-rutorrent_www_dir: /var/www
+rutorrent_www_dir: /var/www/html
 rutorrent_document_root: "{{ rutorrent_www_dir }}/ruTorrent"
 
 rutorrent_version: 3.8
