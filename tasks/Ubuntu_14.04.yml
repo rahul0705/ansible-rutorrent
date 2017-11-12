@@ -1,7 +1,7 @@
 ---
 # tasks file for ansible-certbot configure_apt
 
-- name: add FFMPeg PPA
+- name: Add FFMPeg PPA
   apt_repository:
     repo: "ppa:mc3man/trusty-media"
     state: present
